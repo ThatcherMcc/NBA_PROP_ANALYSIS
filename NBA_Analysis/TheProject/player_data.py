@@ -7,7 +7,7 @@ class DataNotFoundError(Exception):
     "custom exception for name data"
     pass
 
-def get_player_gamelog(full_name: str, year: int, url_start: str = 'https://www.basketball-reference.com/players/j/{name}01/gamelog/{logYear}'):
+def get_player_gamelog(full_name: str, year: int = 2025, url_start: str = 'https://www.basketball-reference.com/players/j/{name}01/gamelog/{logYear}'):
     # get full name from input
     full_name = full_name.strip()
     # split the name into first name last name
