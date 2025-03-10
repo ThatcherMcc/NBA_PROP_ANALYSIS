@@ -22,6 +22,7 @@ def clean_gamelog(df: pd.DataFrame) -> pd.DataFrame:
     df.fillna({"G":"DNP"}, inplace=True) # fill null Game played values with "DNP"
     df.fillna({'Location':'Home'}, inplace=True) # fill null Locations with "Home"
     df.replace({'@': 'Away'}, inplace=True) # replaces "@" signs with the respective "Away"
+    df = df.drop(columns = ['Tm','WLSpread','GS','MP','PF','GmSc', '+/-','Age','G'])
 
     return df
     
