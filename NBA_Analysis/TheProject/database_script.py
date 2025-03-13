@@ -1,9 +1,10 @@
 import sqlite3
 import pandas as pd
 from datetime import datetime, date
+from typing import Optional
 
 DB_NAME = 'player_data.db'
-DB_PATH = "Data/DATABASE"
+DB_PATH = "Data/DATABASE/" + DB_NAME
 
 def connect_db():
     conn = sqlite3.connect(DB_PATH)
@@ -31,9 +32,9 @@ def setup_database():
             FG INTEGER,
             FGA INTEGER,
             FG_PERCENT REAL,
-            3P INTEGER,
-            3PA INTEGER,
-            3P_PERCENT REAL,
+            "3P" INTEGER,
+            "3PA" INTEGER,
+            "3P_PERCENT" REAL,
             FT INTEGER,
             FTA INTEGER,
             FT_PERCENT REAL,
@@ -82,7 +83,7 @@ def save_to_db(df: pd.DataFrame, player_name: str, year: int = 2025) -> bool:
 
         cursor = conn.cursor()
         cursor.execute(
-            "INSERT OR IGNORE INTO PLAYER_REGISTRY WHERE PLAYER_NAME (PLAYER_NAME, LAST_UPDATED) VALUES (?, ?)",
+            "INSERT OR IGNORE INTO PLAYER_REGISTRY (PLAYER_NAME, LAST_UPDATED) VALUES (?, ?)",
             (player_name, today)
         )
 
@@ -132,7 +133,7 @@ def save_to_db(df: pd.DataFrame, player_name: str, year: int = 2025) -> bool:
         cursor.executemany("""
         INSERT INTO PLAYER_STATS (
             PLAYER_ID, DATE, LOCATION, OPPONENT, FG, FGA, FG_PERCENT,
-            3P, 3PA, 3P_PERCENT, FT, FTA, FT_PERCENT, ORB, DRB, TRB,
+            "3P", "3PA", "3P_PERCENT", FT, FTA, FT_PERCENT, ORB, DRB, TRB,
             AST, STL, BLK, TOV, PTS
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, records)
@@ -152,7 +153,7 @@ def save_to_db(df: pd.DataFrame, player_name: str, year: int = 2025) -> bool:
 
 def fetch_player_data(player_name, year: int = 2025) -> Optional[pd.DataFrame]:
     """Fetches player data from the database as a DataFrame."""
-    
+    conn = None
     try:
         conn = connect_db()
 
@@ -164,9 +165,9 @@ def fetch_player_data(player_name, year: int = 2025) -> Optional[pd.DataFrame]:
             ps.FG AS FG,
             ps.FGA AS FGA,
             ps.FG_PERCENT AS FG%,
-            ps.3P AS 3P,
-            ps.3PA AS 3PA,
-            ps.3P_PERCENT AS 3P%,
+            ps."3P" AS "3P",
+            ps."3PA" AS "3PA",
+            ps."3P_PERCENT" AS "3P%",
             ps.FT AS FT,
             ps.FTA AS FTA,
             ps.FT_PERCENT AS FT%,
@@ -202,7 +203,7 @@ def fetch_player_data(player_name, year: int = 2025) -> Optional[pd.DataFrame]:
 
         df = pd.read_sql(query, conn, params=(player_name))
 
-        if df.empty():
+        if df.empty:
             return None
 
         print(f"Retrieved {len(df)} games for {player_name}")
