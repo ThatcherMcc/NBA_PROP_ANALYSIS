@@ -19,7 +19,7 @@ def main():
                 exit()
             if full_name.lower() == "fetch":
                 print("Fetching")
-                graph_dataframe(fetch_player_data(last_name_used), last_name_used, 20)
+                graph_dataframe(dbs.fetch_player_data(last_name_used), last_name_used, 20)
                 continue
                 
             year = 2025
@@ -43,7 +43,7 @@ def main():
             dbs.save_to_db(cleaned_df, name, year)
             last_name_used = name
             # if successful, break the loop
-            break
+            continue
         except ValueError as e:
             print("Name isn't spelled correctly. Make sure to add a space and '-' when needed.")
             continue

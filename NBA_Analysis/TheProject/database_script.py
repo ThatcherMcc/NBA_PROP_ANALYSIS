@@ -51,8 +51,8 @@ def setup_database():
         )
         """)
 
-        conn.execute("CREATE INDEX IF NOT EXISTS idx_player_stats_player_id ON player_stats(player_id)")
-        conn.execute("CREATE INDEX IF NOT EXISTS idx_player_stats_game_date ON player_stats(game_date)")
+        conn.execute("CREATE INDEX IF NOT EXISTS idx_player_stats_player_id ON player_stats(PLAYER_ID)")
+        conn.execute("CREATE INDEX IF NOT EXISTS idx_player_stats_game_date ON player_stats(DATE)")
 
         conn.commit()
     except Exception as e:
@@ -107,7 +107,7 @@ def save_to_db(df: pd.DataFrame, player_name: str, year: int = 2025) -> bool:
                     row.get('Date', ''),
                     row.get('Location', 'Home'),
                     row.get('Opp', ''),
-                    int(row['FG']) if pd.notna(row.get('FG')) else 0,
+                    int(float(row['FG'])) if pd.notna(row.get('FG')) else 0,
                     int(row['FGA']) if pd.notna(row.get('FGA')) else 0,
                     float(row['FG%']) if pd.notna(row.get('FG%')) else None,
                     int(row['3P']) if pd.notna(row.get('3P')) else 0,
