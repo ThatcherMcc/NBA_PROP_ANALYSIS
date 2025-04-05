@@ -1,15 +1,9 @@
 import pandas as pd
 
 def clean_gamelog(df: pd.DataFrame) -> pd.DataFrame:
-    # Drop rows of fluff where the index + 1 is divisible by 20 (21, 41, 61, ...)
-    if 20 in df.index:
-        df = df.drop(20)
-    if 41 in df.index:
-        df = df.drop(41)
-    if 62 in df.index:
-        df = df.drop(62)
-    if 83 in df.index:
-        df = df.drop(83)
+
+    df = df[df['Gtm'] != 'Gtm']
+    df.reset_index(drop=True, inplace=True)
     # df cleaning
     # drop the 'Rk' column so we can use our index col instead
     if 'Rk' in df.columns:
@@ -19,12 +13,12 @@ def clean_gamelog(df: pd.DataFrame) -> pd.DataFrame:
     df.rename(columns={'Unnamed: 5': 'Location'}, inplace=True)
     df.rename(columns={'Unnamed: 7': 'WLSpread'}, inplace=True)
 
-    df.fillna({"G":"DNP"}, inplace=True) # fill null Game played values with "DNP"
+    df.fillna({"Gtm":"DNP"}, inplace=True) # fill null Game played values with "DNP"
     df.fillna({'Location':'Home'}, inplace=True) # fill null Locations with "Home"
     df.replace({'@': 'Away'}, inplace=True) # replaces "@" signs with the respective "Away"
-    df = df[df['G'] != 'DNP']
+    df = df[df['Gtm'] != 'DNP']
     df = df.reset_index(drop=True)
-    df = df.drop(columns = ['Tm','WLSpread','GS','MP','PF','GmSc', '+/-','Age','G'])
+    df = df.drop(columns = ['Team','Result','GS','MP','PF','GmSc', '+/-','Gcar'])
      
     return df
     

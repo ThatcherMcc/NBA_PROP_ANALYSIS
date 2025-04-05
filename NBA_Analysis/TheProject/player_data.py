@@ -13,7 +13,7 @@ def get_player_gamelog(full_name: str, year: int = 2025, url_start: str = 'https
     full_name = full_name.strip()
     # split the name into first name last name
     split_name = full_name.split(' ')
-    print(split_name)
+    #print(split_name)
     if len(split_name) != 2: # raise Error if theres less than 1 name or more than 2
         raise ValueError("Please enter both first and last name. Make sure to include any '-' !")
     
@@ -23,6 +23,7 @@ def get_player_gamelog(full_name: str, year: int = 2025, url_start: str = 'https
         last_name = last_name[:5]
     
     player_name = last_name.lower() + first_name[:2].lower() # formats the name so the website can use it. Lebron James -> jamesle
+    #print(player_name)
     
     # looks up the corresponding year and creates/overwrites the html file in my JokicGameLogs folder
     url = url_start.format(name = player_name, logYear = year)
@@ -38,13 +39,13 @@ def get_player_gamelog(full_name: str, year: int = 2025, url_start: str = 'https
         print("Request timed out:", e)
     except requests.exceptions.RequestException as e:
         print("An error occurred:", e)
-    
-    time.sleep(4)
+    print("Loading...")
+    time.sleep(2)
     
     with open(file_path, encoding="utf-8") as f:
         page = f.read()
         soup = BeautifulSoup(page, "html.parser")
-        stats_table = soup.find(id="pgl_basic")
+        stats_table = soup.find(id="player_game_log_reg")
         
         if stats_table is None:
             raise DataNotFoundError(f"Data for {player_name} in {year} not found. Try again?")

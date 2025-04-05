@@ -4,14 +4,17 @@ import matplotlib.pyplot as plt
 
 def graph_dataframe(df: pd.DataFrame, player_name: str, prop_line: float, stat: str ='PTS', last_games_count: int = 10,  year: int = 2025):
     # drop games not played
-    df = df[df['G'] != 'DNP']
+    df = df[df['Gtm'] != 'DNP']
     df = df.reset_index(drop=True)
+
+    df = df.fillna(0)
     
     # drop stats that are unused in props
     df = df.drop(columns = ['FT%','3P%','FG%'])
     
     # add columns
     df[['PTS', 'TRB', 'AST', 'ORB', 'DRB', 'STL', 'BLK', 'TOV', 'FT', '3P', 'FG', 'FGA', '3PA']] = df[['PTS', 'TRB', 'AST', 'ORB', 'DRB', 'STL', 'BLK', 'TOV', 'FT', '3P', 'FG', 'FGA', '3PA']].apply(pd.to_numeric, errors='coerce')
+    df = df.fillna(0)
     df['PRA'] = df[['PTS', 'TRB', 'AST']].sum(axis=1) # PRA (points + rebounds, assists)
     df['PR'] = df[['PTS', 'TRB']].sum(axis=1) # PR
     df['PA'] = df[['PTS', 'AST']].sum(axis=1) # PA
@@ -38,8 +41,8 @@ def graph_dataframe(df: pd.DataFrame, player_name: str, prop_line: float, stat: 
     bars = plt.bar(df_last['Date'] + ' ' + df_last['Opp'], df_last[stat], color=colors)
     for bar in bars:
         yval = bar.get_height()
-        plt.text(bar.get_x() + bar.get_width() / 2, yval + 0.5, f'{int(yval)}', ha='center', va='bottom', fontsize=9)
-    
+        if yval > 0:
+            plt.text(bar.get_x() + bar.get_width() / 2, yval + 0.5, f'{float(yval)}', ha='center', va='bottom', fontsize=9)
     # Prop line
     plt.axhline(prop_line, color='black', linestyle='--', label=f'Prop Line: {prop_line}')
     
